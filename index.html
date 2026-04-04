@@ -70,30 +70,134 @@
   position: relative;
   z-index: 2;
 }
-     .about-panel {
-    display: flex;
-    justify-content: space-between;
-    align-items: stretch;
-    gap: 24px;
+
+    .about-pro {
+  display: grid;
+  grid-template-columns: 1.15fr 0.95fr;
+  gap: 28px;
+  align-items: stretch;
+  background: #050505;
+  border-radius: 0 0 18px 18px;
+  padding: 34px 34px 30px;
+  max-width: 100%;
+  overflow: hidden;
+}
+
+/* IZQUIERDA */
+.about-left {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+/* TITULO */
+.about-heading {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 14px;
+}
+
+.about-line {
+  width: 3px;
+  height: 56px;
+  background: #ffffff;
+  border-radius: 999px;
+}
+
+.about-heading h2 {
+  margin: 0;
+  color: #ffffff;
+  font-size: 2rem;
+  font-weight: 700;
+}
+
+/* TEXTO */
+.about-text {
+  margin: 0 0 24px 0;
+  color: #d0d0d0;
+  line-height: 1.6;
+  font-size: 0.98rem;
+  max-width: 760px;
+}
+
+/* TARJETAS */
+.about-cards {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+.info-card {
+  background: #151515;
+  border: 1px solid rgba(255,255,255,0.05);
+  border-radius: 12px;
+  padding: 18px 16px;
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  transition: all 0.25s ease;
+}
+
+.info-card:hover {
+  transform: translateY(-4px);
+  background: #1c1c1c;
+}
+
+/* TEXTO DE TARJETAS */
+.info-card h3 {
+  margin: 0 0 6px 0;
+  color: #ffffff;
+  font-size: 1rem;
+}
+
+.info-card p {
+  margin: 0;
+  color: #bdbdbd;
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+/* ICONO */
+.card-icon {
+  font-size: 1.1rem;
+  line-height: 1;
+  margin-top: 2px;
+}
+
+/* TARJETA GRANDE */
+.info-card.wide {
+  grid-column: span 2;
+}
+
+/* DERECHA (IMAGEN) */
+.about-right img {
+  width: 100%;
+  height: 100%;
+  min-height: 360px;
+  object-fit: cover;
+  display: block;
+  border-radius: 14px;
+}
+
+/* RESPONSIVE */
+@media (max-width: 900px) {
+  .about-pro {
+    grid-template-columns: 1fr;
   }
 
-  .about-left {
-    width: 55%;
+  .about-cards {
+    grid-template-columns: 1fr;
   }
 
-  .about-right {
-    width: 45%;
-    display: flex;
-    align-items: stretch;
+  .info-card.wide {
+    grid-column: span 1;
   }
 
   .about-right img {
-    width: 100%;
-    height: auto;
-    max-height: 450px;
-    object-fit: contain;
-    border-radius: 14px;
+    min-height: 260px;
   }
+}
 
   </style>
 </head>
@@ -105,43 +209,52 @@
 </header>
 
 
-<section class="about-feature">
-  <div class="about-panel">
-     <div class="about-left">
-    <div class="about-text">
+<section class="about-pro">
+  <div class="about-left">
+
+    <div class="about-heading">
+      <span class="about-line"></span>
       <h2>Sobre nosotros</h2>
-      <p>
-        Somos un grupo enfocado en las clases particulares y refuerzo académico
-        preuniversitario, orientado a la optimización del rendimiento estudiantil
-        mediante acompañamiento personalizado y enfoque en resultados medibles.
-      </p>
     </div>
 
-    <div class="feature-grid">
-      <div class="feature-card large">
-        <h3>Clases</h3>
-        <p>Refuerzo intensivo en matemáticas y ciencias.</p>
-        <a href="#">Más información →</a>
+    <p class="about-text">
+      Somos un grupo enfocado en las clases particulares y refuerzo académico preuniversitario,
+      orientado a la optimización del rendimiento estudiantil mediante acompañamiento
+      personalizado y enfoque en resultados medibles.
+    </p>
+
+    <div class="about-cards">
+
+      <div class="info-card">
+        <div class="card-icon">📘</div>
+        <div>
+          <h3>Clases</h3>
+          <p>Refuerzo intensivo en matemáticas y ciencias.</p>
+        </div>
       </div>
 
-      <div class="feature-card">
-        <h3>Seguimiento</h3>
-        <p>Control personalizado del progreso del estudiante.</p>
-        <a href="#">Más información →</a>
+      <div class="info-card">
+        <div class="card-icon">📈</div>
+        <div>
+          <h3>Seguimiento</h3>
+          <p>Control personalizado del progreso del estudiante.</p>
+        </div>
       </div>
 
-      <div class="feature-card">
-        <h3>Resultados</h3>
-        <p>Enfoque en rendimiento y mejora constante.</p>
-        <a href="resultados.html">Ir a resultados →</a>
+      <div class="info-card wide">
+        <div class="card-icon">🏅</div>
+        <div>
+          <h3>Resultados</h3>
+          <p>Enfoque en rendimiento y mejora constante.</p>
+        </div>
       </div>
-    </div> <!-- feature-grid -->
-  </div> <!-- about-left -->
+
+    </div>
+  </div>
 
   <div class="about-right">
-    <img src="https://i.postimg.cc/6qgGhtB4/Whats-App-Image-2026-03-29-at-01-23-29.jpg" alt="Espacio de estudio Pirstton">
+    <img src="https://i.postimg.cc/6qgGhtB4/Whats-App-Image-2026-03-29-at-01-23-29.jpg" alt="Pirstton espacio académico">
   </div>
-    </div> <!-- about-panel -->
 </section>
 </div>
 
