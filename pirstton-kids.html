@@ -1,12 +1,971 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Pirstton Kids</title>
+
+  <style>
+    /* =========================================================
+       1) RESET GENERAL
+    ========================================================= */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: "Segoe UI", Arial, sans-serif;
+      background: #f6f2eb;
+      color: #1f1f1f;
+      overflow-x: hidden;
+      line-height: 1.5;
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    button {
+      font: inherit;
+      border: none;
+      cursor: pointer;
+    }
+
+    /* =========================================================
+       2) VARIABLES DE COLOR
+       Puedes cambiar aquí tonos sin romper la estructura
+    ========================================================= */
+    :root {
+      --bg-main: #f6f2eb;
+      --bg-soft: #fbf8f3;
+      --text-main: #1f1f1f;
+      --text-soft: #5c564f;
+      --white-soft: #fffdf9;
+      --line-soft: rgba(255, 255, 255, 0.18);
+
+      --tag-1: #d8b08c;
+      --tag-2: #b8b1aa;
+      --tag-3: #d69467;
+
+      --button-main: #ffffff;
+      --button-main-text: #1f1f1f;
+      --button-second: rgba(255, 255, 255, 0.12);
+      --button-second-border: rgba(255, 255, 255, 0.34);
+
+      --shadow-soft: 0 14px 35px rgba(0, 0, 0, 0.12);
+      --shadow-strong: 0 18px 40px rgba(0, 0, 0, 0.18);
+
+      --radius-lg: 22px;
+      --radius-md: 16px;
+      --radius-sm: 12px;
+
+      --container: 1280px;
+    }
+
+    /* =========================================================
+       3) CONTENEDOR GENERAL
+    ========================================================= */
+    .container {
+      width: min(92%, var(--container));
+      margin: 0 auto;
+    }
+
+    /* =========================================================
+       4) HERO PRINCIPAL
+       Aquí vive la portada grande
+    ========================================================= */
+    .hero {
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      overflow: hidden;
+      isolation: isolate;
+      background: #ddd;
+    }
+
+    /* =========================================================
+       5) IMAGEN DE FONDO
+       SOLO CAMBIA LA URL DE ABAJO
+    ========================================================= */
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(
+          90deg,
+          rgba(25, 19, 15, 0.62) 0%,
+          rgba(25, 19, 15, 0.48) 20%,
+          rgba(25, 19, 15, 0.26) 38%,
+          rgba(25, 19, 15, 0.08) 55%,
+          rgba(25, 19, 15, 0.02) 72%,
+          rgba(25, 19, 15, 0.00) 100%
+        ),
+        url("AQUI_PEGA_EL_LINK_DE_TU_IMAGEN");
+      background-size: cover;
+      background-position: center center;
+      background-repeat: no-repeat;
+      transform: scale(1.08);
+      animation: heroZoom 2.6s ease-out forwards;
+      z-index: -3;
+    }
+
+    /* =========================================================
+       6) OVERLAY SUAVE EXTRA
+       Le da más elegancia a la lectura del contenido
+    ========================================================= */
+    .hero-overlay {
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(
+          180deg,
+          rgba(0, 0, 0, 0.18) 0%,
+          rgba(0, 0, 0, 0.08) 20%,
+          rgba(0, 0, 0, 0.04) 45%,
+          rgba(0, 0, 0, 0.14) 100%
+        );
+      opacity: 0;
+      animation: overlayReveal 1.2s ease forwards;
+      z-index: -2;
+    }
+
+    /* =========================================================
+       7) CONTENIDO SUPERIOR IZQUIERDO
+       Bloque principal del texto
+    ========================================================= */
+    .hero-content-wrap {
+      width: min(92%, var(--container));
+      margin: 0 auto;
+      padding-top: 82px;
+      padding-bottom: 180px;
+      display: flex;
+      align-items: flex-start;
+      justify-content: flex-start;
+      position: relative;
+      z-index: 3;
+    }
+
+    .hero-content {
+      max-width: 620px;
+      color: #fff;
+    }
+
+    /* =========================================================
+       8) LÍNEA SUPERIOR PEQUEÑA
+    ========================================================= */
+    .hero-topline {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 18px;
+      opacity: 0;
+      transform: translateY(24px);
+      animation: fadeUp 0.8s ease forwards;
+      animation-delay: 0.25s;
+    }
+
+    .hero-topline::before {
+      content: "";
+      width: 56px;
+      height: 1.6px;
+      background: rgba(255, 255, 255, 0.8);
+      border-radius: 999px;
+    }
+
+    .hero-topline span {
+      font-size: 0.92rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, 0.84);
+      font-weight: 600;
+    }
+
+    /* =========================================================
+       9) TÍTULO PRINCIPAL
+    ========================================================= */
+    .hero-title {
+      font-size: clamp(2.8rem, 5vw, 5.6rem);
+      line-height: 0.96;
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      margin-bottom: 22px;
+      max-width: 540px;
+      opacity: 0;
+      transform: translateY(28px);
+      filter: blur(10px);
+      text-shadow: 0 10px 28px rgba(0, 0, 0, 0.16);
+      animation: titleReveal 1.15s cubic-bezier(.2,.75,.2,1) forwards;
+      animation-delay: 0.48s;
+    }
+
+    /* =========================================================
+       10) PÁRRAFO DESCRIPTIVO
+    ========================================================= */
+    .hero-text {
+      max-width: 590px;
+      font-size: clamp(1rem, 1.5vw, 1.08rem);
+      color: rgba(255, 255, 255, 0.9);
+      margin-bottom: 28px;
+      opacity: 0;
+      transform: translateY(26px);
+      animation: fadeUp 0.9s ease forwards;
+      animation-delay: 0.72s;
+    }
+
+    /* =========================================================
+       11) ETIQUETAS / TABLAS SUPERIORES
+    ========================================================= */
+    .hero-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 30px;
+    }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 11px 18px;
+      border-radius: 999px;
+      color: #1e1e1e;
+      font-weight: 700;
+      font-size: 0.95rem;
+      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.12);
+      opacity: 0;
+      transform: translateY(24px) scale(0.92);
+      animation: tagEnter 0.75s cubic-bezier(.2,.75,.2,1) forwards;
+    }
+
+    .tag:nth-child(1) {
+      background: var(--tag-1);
+      animation-delay: 0.92s;
+    }
+
+    .tag:nth-child(2) {
+      background: var(--tag-2);
+      animation-delay: 1.02s;
+    }
+
+    .tag:nth-child(3) {
+      background: var(--tag-3);
+      animation-delay: 1.12s;
+    }
+
+    .tag:hover {
+      transform: translateY(-8px) scale(1.04);
+      box-shadow: 0 18px 34px rgba(0, 0, 0, 0.18);
+      filter: brightness(1.04);
+    }
+
+    /* =========================================================
+       12) BOTONES PRINCIPALES
+    ========================================================= */
+    .hero-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      opacity: 0;
+      transform: translateY(26px);
+      animation: fadeUp 0.9s ease forwards;
+      animation-delay: 1.18s;
+    }
+
+    .btn {
+      position: relative;
+      overflow: hidden;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 190px;
+      padding: 15px 24px;
+      border-radius: 999px;
+      font-weight: 700;
+      transition:
+        transform 0.35s ease,
+        box-shadow 0.35s ease,
+        background 0.35s ease,
+        color 0.35s ease,
+        border-color 0.35s ease;
+    }
+
+    .btn::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: -130%;
+      width: 80%;
+      height: 100%;
+      background: linear-gradient(
+        120deg,
+        transparent,
+        rgba(255,255,255,0.35),
+        transparent
+      );
+      transform: skewX(-20deg);
+      transition: left 0.6s ease;
+    }
+
+    .btn:hover::after {
+      left: 160%;
+    }
+
+    .btn-primary {
+      background: var(--button-main);
+      color: var(--button-main-text);
+      box-shadow: 0 12px 28px rgba(0, 0, 0, 0.15);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-8px) scale(1.03);
+      box-shadow: 0 24px 38px rgba(0, 0, 0, 0.22);
+    }
+
+    .btn-secondary {
+      background: var(--button-second);
+      color: #fff;
+      border: 1px solid var(--button-second-border);
+      backdrop-filter: blur(5px);
+    }
+
+    .btn-secondary:hover {
+      transform: translateY(-8px) scale(1.03);
+      box-shadow: 0 22px 34px rgba(0, 0, 0, 0.2);
+      background: rgba(255, 255, 255, 0.2);
+      border-color: rgba(255, 255, 255, 0.58);
+    }
+
+    /* =========================================================
+       13) BLOQUES INFERIORES "PIRSTTON"
+       Se forman una sola vez al cargar
+    ========================================================= */
+    .hero-blocks-wrap {
+      position: absolute;
+      left: 50%;
+      bottom: 36px;
+      transform: translateX(-50%);
+      width: min(92%, 980px);
+      display: flex;
+      justify-content: center;
+      z-index: 2;
+      pointer-events: none;
+    }
+
+    .hero-blocks {
+      display: flex;
+      align-items: flex-end;
+      gap: 14px;
+      flex-wrap: nowrap;
+    }
+
+    .letter-block {
+      width: clamp(54px, 5.8vw, 82px);
+      height: clamp(60px, 6.6vw, 90px);
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: clamp(1.45rem, 2vw, 2rem);
+      font-weight: 800;
+      color: #ffffff;
+      letter-spacing: -0.03em;
+      box-shadow:
+        0 22px 22px rgba(0, 0, 0, 0.18),
+        inset 0 1px 0 rgba(255, 255, 255, 0.18);
+      opacity: 0;
+      transform-origin: center bottom;
+      animation-duration: 1.15s;
+      animation-fill-mode: forwards;
+      animation-timing-function: cubic-bezier(.18,.76,.22,1);
+    }
+
+    .letter-block:nth-child(1) {
+      background: #c88b66;
+      animation-name: blockLeft;
+      animation-delay: 1.25s;
+    }
+
+    .letter-block:nth-child(2) {
+      background: #a06d4d;
+      animation-name: blockRight;
+      animation-delay: 1.37s;
+    }
+
+    .letter-block:nth-child(3) {
+      background: #b27c59;
+      animation-name: blockLeft;
+      animation-delay: 1.49s;
+    }
+
+    .letter-block:nth-child(4) {
+      background: #8b5d40;
+      animation-name: blockBottom;
+      animation-delay: 1.61s;
+    }
+
+    .letter-block:nth-child(5) {
+      background: #d49b75;
+      animation-name: blockRight;
+      animation-delay: 1.73s;
+    }
+
+    .letter-block:nth-child(6) {
+      background: #9b694b;
+      animation-name: blockLeft;
+      animation-delay: 1.85s;
+    }
+
+    .letter-block:nth-child(7) {
+      background: #b88563;
+      animation-name: blockBottom;
+      animation-delay: 1.97s;
+    }
+
+    .letter-block:nth-child(8) {
+      background: #7f5239;
+      animation-name: blockRight;
+      animation-delay: 2.09s;
+    }
+
+    /* =========================================================
+       14) SECCIÓN INFORMATIVA DEBAJO DEL HERO
+       Esto ya le da aspecto de página real, no solo portada
+    ========================================================= */
+    .section {
+      padding: 90px 0;
+    }
+
+    .section-light {
+      background: var(--bg-soft);
+    }
+
+    .section-title {
+      font-size: clamp(2rem, 3vw, 3rem);
+      line-height: 1.05;
+      letter-spacing: -0.03em;
+      margin-bottom: 18px;
+      color: #201d1a;
+    }
+
+    .section-subtitle {
+      max-width: 780px;
+      color: var(--text-soft);
+      font-size: 1.02rem;
+      margin-bottom: 38px;
+    }
+
+    /* =========================================================
+       15) TARJETAS DE PROPUESTA EDUCATIVA
+    ========================================================= */
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 22px;
+    }
+
+    .info-card {
+      background: rgba(255, 255, 255, 0.78);
+      backdrop-filter: blur(8px);
+      border-radius: 24px;
+      padding: 28px 24px;
+      box-shadow: var(--shadow-soft);
+      border: 1px solid rgba(20, 20, 20, 0.04);
+      transition: transform 0.35s ease, box-shadow 0.35s ease;
+    }
+
+    .info-card:hover {
+      transform: translateY(-10px);
+      box-shadow: var(--shadow-strong);
+    }
+
+    .info-card h3 {
+      font-size: 1.2rem;
+      margin-bottom: 10px;
+      color: #1f1b18;
+    }
+
+    .info-card p {
+      color: #625c55;
+      font-size: 0.98rem;
+    }
+
+    /* =========================================================
+       16) SECCIÓN DE METODOLOGÍA
+    ========================================================= */
+    .method-grid {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 26px;
+      align-items: stretch;
+    }
+
+    .method-box,
+    .cta-box {
+      background: #fff;
+      border-radius: 28px;
+      padding: 34px;
+      box-shadow: var(--shadow-soft);
+    }
+
+    .method-box p,
+    .cta-box p {
+      color: #5e5851;
+      margin-bottom: 16px;
+    }
+
+    .bullet-list {
+      display: grid;
+      gap: 14px;
+      margin-top: 20px;
+    }
+
+    .bullet-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      color: #312c27;
+    }
+
+    .bullet-dot {
+      width: 11px;
+      height: 11px;
+      margin-top: 8px;
+      border-radius: 50%;
+      background: #c88b66;
+      flex-shrink: 0;
+      box-shadow: 0 0 0 6px rgba(200, 139, 102, 0.12);
+    }
+
+    /* =========================================================
+       17) PIE FINAL / CTA
+    ========================================================= */
+    .final-cta {
+      text-align: center;
+      padding: 92px 0 100px;
+      background:
+        linear-gradient(180deg, #f8f4ee 0%, #efe5d8 100%);
+    }
+
+    .final-cta h2 {
+      font-size: clamp(2rem, 4vw, 3.4rem);
+      margin-bottom: 16px;
+      letter-spacing: -0.03em;
+      color: #1f1b18;
+    }
+
+    .final-cta p {
+      max-width: 760px;
+      margin: 0 auto 28px;
+      color: #5f5952;
+      font-size: 1rem;
+    }
+
+    .final-cta .hero-buttons {
+      justify-content: center;
+      opacity: 1;
+      transform: none;
+      animation: none;
+    }
+
+    /* =========================================================
+       18) ANIMACIONES GENERALES
+    ========================================================= */
+    @keyframes heroZoom {
+      from {
+        transform: scale(1.08);
+      }
+      to {
+        transform: scale(1);
+      }
+    }
+
+    @keyframes overlayReveal {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
+    }
+
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(26px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes titleReveal {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+        filter: blur(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+        filter: blur(0);
+      }
+    }
+
+    @keyframes tagEnter {
+      0% {
+        opacity: 0;
+        transform: translateY(24px) scale(0.92);
+      }
+      70% {
+        opacity: 1;
+        transform: translateY(-4px) scale(1.03);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    @keyframes blockLeft {
+      0% {
+        opacity: 0;
+        transform: translateX(-120px) translateY(24px) rotate(-10deg) scale(0.88);
+      }
+      68% {
+        opacity: 1;
+        transform: translateX(10px) translateY(-8px) rotate(2deg) scale(1.03);
+      }
+      100% {
+        opacity: 1;
+        transform: translateX(0) translateY(0) rotate(0deg) scale(1);
+      }
+    }
+
+    @keyframes blockRight {
+      0% {
+        opacity: 0;
+        transform: translateX(120px) translateY(20px) rotate(10deg) scale(0.88);
+      }
+      68% {
+        opacity: 1;
+        transform: translateX(-8px) translateY(-8px) rotate(-2deg) scale(1.03);
+      }
+      100% {
+        opacity: 1;
+        transform: translateX(0) translateY(0) rotate(0deg) scale(1);
+      }
+    }
+
+    @keyframes blockBottom {
+      0% {
+        opacity: 0;
+        transform: translateY(90px) rotate(8deg) scale(0.86);
+      }
+      68% {
+        opacity: 1;
+        transform: translateY(-8px) rotate(-1deg) scale(1.03);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0) rotate(0deg) scale(1);
+      }
+    }
+
+    /* =========================================================
+       19) RESPONSIVE TABLET
+    ========================================================= */
+    @media (max-width: 1024px) {
+      .hero-content-wrap {
+        padding-top: 72px;
+        padding-bottom: 170px;
+      }
+
+      .cards-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .method-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-blocks {
+        gap: 10px;
+      }
+
+      .letter-block {
+        border-radius: 14px;
+      }
+    }
+
+    /* =========================================================
+       20) RESPONSIVE MÓVIL
+    ========================================================= */
+    @media (max-width: 768px) {
+      .hero {
+        min-height: 100svh;
+      }
+
+      .hero-bg {
+        background-position: center center;
+      }
+
+      .hero-content-wrap {
+        padding-top: 68px;
+        padding-bottom: 150px;
+      }
+
+      .hero-content {
+        max-width: 100%;
+      }
+
+      .hero-title {
+        max-width: 100%;
+      }
+
+      .hero-text {
+        font-size: 0.98rem;
+      }
+
+      .hero-tags {
+        gap: 10px;
+      }
+
+      .tag {
+        font-size: 0.9rem;
+        padding: 10px 14px;
+      }
+
+      .hero-buttons {
+        flex-direction: column;
+        align-items: stretch;
+        max-width: 290px;
+      }
+
+      .btn {
+        width: 100%;
+        min-width: auto;
+      }
+
+      .hero-blocks-wrap {
+        bottom: 24px;
+      }
+
+      .hero-blocks {
+        gap: 8px;
+      }
+
+      .letter-block {
+        width: 38px;
+        height: 46px;
+        font-size: 1rem;
+        border-radius: 10px;
+      }
+
+      .cards-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .section {
+        padding: 78px 0;
+      }
+
+      .method-box,
+      .cta-box {
+        padding: 28px 22px;
+      }
+    }
+  </style>
 </head>
 <body>
-  <h1>Pirstton Kids</h1>
-  <p>Próximamente contenido de la subpágina.</p>
+
+  <!-- =========================================================
+       HERO PRINCIPAL
+  ========================================================== -->
+  <header class="hero">
+
+    <!-- FONDO -->
+    <div class="hero-bg"></div>
+
+    <!-- OVERLAY -->
+    <div class="hero-overlay"></div>
+
+    <!-- CONTENIDO SUPERIOR -->
+    <div class="hero-content-wrap">
+      <div class="hero-content">
+
+        <!-- LÍNEA SUPERIOR -->
+        <div class="hero-topline">
+          <span>Educación inicial especializada</span>
+        </div>
+
+        <!-- TÍTULO PRINCIPAL -->
+        <h1 class="hero-title">Pirstton Kids</h1>
+
+        <!-- PÁRRAFO PRINCIPAL -->
+        <p class="hero-text">
+          Pirstton también ofrece programas formativos para niños y niñas,
+          orientados al fortalecimiento de la lectoescritura, la estimulación
+          cognitiva y el desarrollo progresivo de habilidades esenciales en
+          etapas iniciales del aprendizaje, bajo una propuesta didáctica,
+          cercana y profesional.
+        </p>
+
+        <!-- ETIQUETAS / TABLAS -->
+        <div class="hero-tags">
+          <span class="tag">Lectoescritura</span>
+          <span class="tag">Método Montessori</span>
+          <span class="tag">Desarrollo Infantil</span>
+        </div>
+
+        <!-- BOTONES -->
+        <div class="hero-buttons">
+          <a href="#programa" class="btn btn-primary">Conocer programa</a>
+          <a href="#metodologia" class="btn btn-secondary">Ver metodología</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- BLOQUES INFERIORES "PIRSTTON" -->
+    <div class="hero-blocks-wrap">
+      <div class="hero-blocks">
+        <span class="letter-block">P</span>
+        <span class="letter-block">i</span>
+        <span class="letter-block">r</span>
+        <span class="letter-block">s</span>
+        <span class="letter-block">t</span>
+        <span class="letter-block">t</span>
+        <span class="letter-block">o</span>
+        <span class="letter-block">n</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- =========================================================
+       SECCIÓN 1: PROPUESTA EDUCATIVA
+  ========================================================== -->
+  <section class="section section-light" id="programa">
+    <div class="container">
+      <h2 class="section-title">Una propuesta pensada para aprender con propósito</h2>
+      <p class="section-subtitle">
+        Pirstton Kids articula acompañamiento pedagógico, actividades guiadas
+        y recursos didácticos orientados al fortalecimiento de la autonomía,
+        la comunicación, la motricidad fina y el desarrollo integral en la
+        infancia temprana.
+      </p>
+
+      <div class="cards-grid">
+        <article class="info-card">
+          <h3>Lectoescritura inicial</h3>
+          <p>
+            Estrategias dirigidas al reconocimiento progresivo de sonidos,
+            letras, sílabas, comprensión básica y producción escrita inicial
+            mediante actividades significativas.
+          </p>
+        </article>
+
+        <article class="info-card">
+          <h3>Aprendizaje activo</h3>
+          <p>
+            Experiencias educativas que promueven exploración, observación,
+            manipulación de materiales y participación constante del niño
+            dentro de un entorno estructurado.
+          </p>
+        </article>
+
+        <article class="info-card">
+          <h3>Desarrollo integral</h3>
+          <p>
+            Trabajo orientado al fortalecimiento de la atención, la autonomía,
+            la interacción, la coordinación motriz y habilidades de base para
+            aprendizajes posteriores.
+          </p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- =========================================================
+       SECCIÓN 2: METODOLOGÍA
+  ========================================================== -->
+  <section class="section" id="metodologia">
+    <div class="container">
+      <div class="method-grid">
+
+        <div class="method-box">
+          <h2 class="section-title">Metodología clara, cercana y bien dirigida</h2>
+          <p>
+            La propuesta considera principios de acompañamiento respetuoso,
+            organización del entorno, materiales concretos y progresión
+            pedagógica adaptada al ritmo de aprendizaje de cada niño o niña.
+          </p>
+
+          <div class="bullet-list">
+            <div class="bullet-item">
+              <span class="bullet-dot"></span>
+              <p>Actividades guiadas con objetivos concretos y observables.</p>
+            </div>
+            <div class="bullet-item">
+              <span class="bullet-dot"></span>
+              <p>Énfasis en lectoescritura, atención, motricidad y autonomía.</p>
+            </div>
+            <div class="bullet-item">
+              <span class="bullet-dot"></span>
+              <p>Entorno ordenado que favorece concentración y participación.</p>
+            </div>
+            <div class="bullet-item">
+              <span class="bullet-dot"></span>
+              <p>Recursos didácticos alineados con una experiencia significativa.</p>
+            </div>
+          </div>
+        </div>
+
+        <aside class="cta-box">
+          <h2 class="section-title">Pirstton también acompaña las primeras etapas</h2>
+          <p>
+            Más allá del refuerzo académico, Pirstton amplía su propuesta con
+            espacios dirigidos a niños y niñas que requieren bases sólidas para
+            aprender, explorar y desenvolverse mejor en sus primeros años.
+          </p>
+
+          <div class="hero-tags" style="margin-top: 22px; margin-bottom: 0;">
+            <span class="tag" style="opacity:1; transform:none; animation:none; background: var(--tag-1);">Ambiente didáctico</span>
+            <span class="tag" style="opacity:1; transform:none; animation:none; background: var(--tag-2);">Progresión guiada</span>
+            <span class="tag" style="opacity:1; transform:none; animation:none; background: var(--tag-3);">Acompañamiento cercano</span>
+          </div>
+        </aside>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- =========================================================
+       SECCIÓN FINAL / LLAMADO A LA ACCIÓN
+  ========================================================== -->
+  <section class="final-cta">
+    <div class="container">
+      <h2>Una experiencia educativa cuidada desde el inicio</h2>
+      <p>
+        Pirstton Kids integra metodología, recursos y acompañamiento con una
+        imagen profesional, cálida y bien estructurada para transmitir
+        confianza desde el primer vistazo.
+      </p>
+
+      <div class="hero-buttons">
+        <a href="#" class="btn btn-primary">Solicitar información</a>
+        <a href="#" class="btn btn-secondary" style="color:#2a241f; border-color: rgba(42,36,31,0.14); background: rgba(255,255,255,0.72);">Explorar propuesta</a>
+      </div>
+    </div>
+  </section>
+
 </body>
 </html>
