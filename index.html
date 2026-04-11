@@ -34,7 +34,7 @@
        - Preparado para futuras animaciones.
     ========================================================= */
     .frame {
-      width: min(1200px, 95vw);
+      width: min(1200px, 95vw, calc((100vh - 36px) * 768 / 442));
       aspect-ratio: 768 / 442;
       background: #efefef;
       position: relative;
@@ -68,7 +68,40 @@
       letter-spacing: 0.5px;
       color: #111;
       flex-shrink: 0;
+      position: relative;
+      z-index: 20;
     }
+
+    .brand-text {
+      display: inline-flex;
+      gap: 1px;
+      font-size: 16px;
+      letter-spacing: 0.8px;
+      color: #232323;
+      perspective: 700px;
+    }
+
+    .brand-text span {
+      display: inline-block;
+      animation: puzzleDrop 0.9s cubic-bezier(.22,1,.36,1) backwards;
+      text-shadow: 0 1px 0 rgba(255,255,255,0.4);
+      transition: transform 0.25s ease, color 0.25s ease;
+      will-change: transform;
+    }
+
+    .brand:hover .brand-text span {
+      transform: translateY(-2px) rotate(-2deg);
+      color: #8f6746;
+    }
+
+    .brand-text span:nth-child(1) { animation-delay: 0.04s; }
+    .brand-text span:nth-child(2) { animation-delay: 0.10s; }
+    .brand-text span:nth-child(3) { animation-delay: 0.16s; }
+    .brand-text span:nth-child(4) { animation-delay: 0.22s; }
+    .brand-text span:nth-child(5) { animation-delay: 0.28s; }
+    .brand-text span:nth-child(6) { animation-delay: 0.34s; }
+    .brand-text span:nth-child(7) { animation-delay: 0.40s; }
+    .brand-text span:nth-child(8) { animation-delay: 0.46s; }
 
     .brand-icon {
       width: 16px;
@@ -105,32 +138,141 @@
       color: inherit;
     }
 
-    /* Botón nuevo superior derecho: Pirstton Kids */
+    /* Botón superior derecho: Pirstton Kids */
     .kids-button {
       position: absolute;
-      top: 10px;
+      top: 8px;
       right: 34px;
-      min-width: 128px;
-      height: 38px;
-      padding: 0 18px;
+      width: 230px;
+      height: 44px;
       display: inline-flex;
       align-items: center;
-      justify-content: center;
-      border: 1px solid #b89574;
-      background: linear-gradient(180deg, #f8f5f2 0%, #ead6c5 100%);
-      color: #2b2b2b;
+      justify-content: flex-end;
+      padding: 0 18px 0 80px;
+      border-radius: 16px;
+      border: 2px solid rgba(255, 248, 220, 0.85);
+      background:
+        radial-gradient(circle at 20% 35%, rgba(255,255,255,0.35), transparent 26%),
+        radial-gradient(circle at 78% 25%, rgba(255,231,140,0.42), transparent 16%),
+        linear-gradient(135deg, #ffb55c 0%, #ff983d 34%, #ff8c57 62%, #ffcf63 100%);
+      color: #fff;
       text-decoration: none;
+      overflow: visible;
+      box-shadow: 0 0 0 2px rgba(255,255,255,0.15) inset, 0 8px 18px rgba(255, 147, 71, 0.34), 0 0 18px rgba(255, 196, 97, 0.28);
+      z-index: 14;
+      transition: transform 0.28s ease, box-shadow 0.28s ease, filter 0.28s ease;
+      isolation: isolate;
+    }
+
+    .kids-button::before {
+      content: "";
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      width: 52px;
+      height: 52px;
+      transform: translateY(-50%);
+      border-radius: 50%;
+      background:
+        radial-gradient(circle at 50% 56%, #ffffff 0 63%, transparent 64%),
+        radial-gradient(circle at 34% 43%, #ffffff 0 2px, transparent 3px),
+        radial-gradient(circle at 66% 43%, #ffffff 0 2px, transparent 3px),
+        radial-gradient(circle at 50% 70%, #ffffff 0 9px, transparent 10px),
+        radial-gradient(circle at 50% 50%, #ff9656 0 100%);
+      box-shadow: 0 6px 12px rgba(0,0,0,0.16);
+      z-index: 1;
+      transition: transform 0.25s ease;
+    }
+
+    .kids-button::after {
+      content: "";
+      position: absolute;
+      left: 26px;
+      top: -6px;
+      width: 18px;
+      height: 18px;
+      background: #ffd66a;
+      border-radius: 50% 50% 30% 30%;
+      box-shadow: 10px 4px 0 0 #ffd66a;
+      transform: rotate(-18deg);
+      z-index: 2;
+      transition: transform 0.25s ease;
+    }
+
+    .kids-button .kids-label {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+      position: relative;
+      z-index: 3;
+    }
+
+    .kids-button .kids-mini {
       font-size: 12px;
-      font-weight: 700;
-      letter-spacing: 0.3px;
-      box-shadow: 0 6px 14px rgba(0, 0, 0, 0.10);
-      z-index: 12;
-      transition: transform 0.25s ease, box-shadow 0.25s ease;
+      font-weight: 800;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      text-shadow: 0 2px 0 rgba(0,0,0,0.12);
+    }
+
+    .kids-button .kids-big {
+      font-size: 18px;
+      font-weight: 900;
+      letter-spacing: 0.5px;
+      color: #ffe65d;
+      text-shadow: 0 2px 0 rgba(150,78,0,0.35);
+    }
+
+    .kids-button .sparkle,
+    .kids-button .sparkle::before,
+    .kids-button .sparkle::after {
+      position: absolute;
+      width: 7px;
+      height: 7px;
+      background: rgba(255,255,255,0.92);
+      clip-path: polygon(50% 0, 62% 38%, 100% 50%, 62% 62%, 50% 100%, 38% 62%, 0 50%, 38% 38%);
+      animation: kidsSpark 2.1s ease-in-out infinite;
+    }
+
+    .kids-button .sparkle {
+      right: 14px;
+      top: 6px;
+    }
+
+    .kids-button .sparkle::before,
+    .kids-button .sparkle::after {
+      content: "";
+    }
+
+    .kids-button .sparkle::before {
+      right: 18px;
+      top: 16px;
+      animation-delay: 0.4s;
+    }
+
+    .kids-button .sparkle::after {
+      right: 34px;
+      top: -2px;
+      animation-delay: 0.8s;
     }
 
     .kids-button:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 8px 18px rgba(0, 0, 0, 0.14);
+      transform: translateY(-2px) scale(1.02);
+      box-shadow: 0 10px 22px rgba(255, 147, 71, 0.40), 0 0 24px rgba(255, 201, 107, 0.34);
+      filter: saturate(1.05);
+    }
+
+    .kids-button:hover::before {
+      transform: translateY(-50%) translateX(8px) rotate(-12deg) scale(1.03);
+      animation: biteFace 0.42s ease-in-out 1;
+    }
+
+    .kids-button:hover::after {
+      transform: rotate(-30deg) translateX(6px);
+    }
+
+    .kids-button:hover .kids-label {
+      animation: biteLabel 0.42s ease-in-out 1;
     }
 
     /* =========================================================
@@ -514,6 +656,211 @@
       z-index: 2;
     }
 
+
+    /* =========================================================
+       15. ANIMACIONES PRINCIPALES
+    ========================================================= */
+    .title {
+      animation: titleEnter 1.1s cubic-bezier(.22,1,.36,1) both;
+    }
+
+    .title .line1 {
+      animation: strongTextPulse 3.2s ease-in-out 1.1s infinite;
+      transform-origin: left center;
+    }
+
+    .title .line2 {
+      animation: copperSlide 4s ease-in-out 1.1s infinite;
+      transform-origin: left center;
+    }
+
+    .desc {
+      animation: fadeRise 1s ease 0.45s both;
+    }
+
+    .button-stack {
+      animation: fadeRise 1s ease 0.65s both;
+    }
+
+    .photo {
+      animation: photoReveal 1.15s cubic-bezier(.22,1,.36,1) 0.35s both;
+    }
+
+    .stats {
+      animation: fadeRise 1s ease 0.9s both;
+    }
+
+    .hero-button,
+    .discount,
+    .stat,
+    .photo,
+    .line-accent,
+    .left-block,
+    .outline-box,
+    .mid-outline,
+    .top-circle,
+    .big-circle,
+    .small-circle,
+    .dots1,
+    .dots2,
+    .dots3,
+    .dots4,
+    .mini-lines,
+    .bottom-lines {
+      will-change: transform, opacity;
+    }
+
+    .hero-button {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-button::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(110deg, transparent 0%, rgba(255,255,255,0.08) 30%, rgba(255,255,255,0.35) 48%, rgba(255,255,255,0.08) 64%, transparent 100%);
+      transform: translateX(-135%);
+      transition: transform 0.55s ease;
+    }
+
+    .hero-button:hover::before {
+      transform: translateX(135%);
+    }
+
+    .hero-button:hover {
+      transform: translateY(-3px) scale(1.035);
+      box-shadow: 0 10px 18px rgba(0, 0, 0, 0.18);
+    }
+
+    .discount {
+      transition: transform 0.28s ease, box-shadow 0.28s ease;
+      animation: badgeFloat 3s ease-in-out 1.2s infinite;
+    }
+
+    .discount:hover {
+      transform: translateY(-4px) rotate(-1.5deg) scale(1.02);
+      box-shadow: 0 14px 24px rgba(0, 0, 0, 0.14);
+    }
+
+    .stat {
+      transition: transform 0.28s ease, filter 0.28s ease;
+    }
+
+    .stat:hover {
+      transform: translateY(-3px) scale(1.04);
+      filter: saturate(1.08);
+    }
+
+    .photo:hover {
+      transform: translateY(-2px) scale(1.01);
+      box-shadow: 0 18px 28px rgba(0, 0, 0, 0.11);
+    }
+
+    .line-accent {
+      animation: lineGlow 2.8s ease-in-out infinite;
+    }
+
+    .left-block,
+    .outline-box,
+    .mid-outline,
+    .top-circle,
+    .big-circle,
+    .small-circle {
+      animation: softFloat 5s ease-in-out infinite;
+    }
+
+    .outline-box { animation-delay: 0.2s; }
+    .mid-outline { animation-delay: 0.5s; }
+    .top-circle { animation-delay: 0.8s; }
+    .big-circle { animation-delay: 1.1s; }
+    .small-circle { animation-delay: 1.4s; }
+
+    .dots1,
+    .dots2,
+    .dots3,
+    .dots4,
+    .mini-lines,
+    .bottom-lines {
+      animation: sparkleDrift 3.5s ease-in-out infinite;
+    }
+
+    .dots2 { animation-delay: 0.4s; }
+    .dots3 { animation-delay: 0.8s; }
+    .dots4 { animation-delay: 1.1s; }
+    .mini-lines { animation-delay: 0.5s; }
+    .bottom-lines { animation-delay: 1.4s; }
+
+    @keyframes puzzleDrop {
+      0% { opacity: 0; transform: translateY(-14px) rotateX(90deg) scale(0.7); }
+      70% { opacity: 1; transform: translateY(2px) rotateX(-16deg) scale(1.05); }
+      100% { opacity: 1; transform: translateY(0) rotateX(0) scale(1); }
+    }
+
+    @keyframes kidsSpark {
+      0%, 100% { transform: scale(0.6) rotate(0deg); opacity: 0.55; }
+      50% { transform: scale(1.15) rotate(30deg); opacity: 1; }
+    }
+
+    @keyframes biteFace {
+      0% { transform: translateY(-50%) translateX(0) rotate(0) scale(1); }
+      35% { transform: translateY(-50%) translateX(12px) rotate(-16deg) scale(1.04); }
+      55% { transform: translateY(-50%) translateX(14px) rotate(-20deg) scale(0.96); }
+      100% { transform: translateY(-50%) translateX(8px) rotate(-12deg) scale(1.03); }
+    }
+
+    @keyframes biteLabel {
+      0% { transform: translateX(0) scaleX(1); }
+      45% { transform: translateX(-2px) scaleX(0.96); }
+      70% { transform: translateX(-1px) scaleX(1.02); }
+      100% { transform: translateX(0) scaleX(1); }
+    }
+
+    @keyframes titleEnter {
+      0% { opacity: 0; transform: translateY(18px) scale(0.94); }
+      100% { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    @keyframes strongTextPulse {
+      0%, 100% { transform: translateX(0) scale(1); text-shadow: 1px 2px 0 #777; }
+      50% { transform: translateX(2px) scale(1.02); text-shadow: 2px 4px 0 #868686; }
+    }
+
+    @keyframes copperSlide {
+      0%, 100% { transform: translateX(0); letter-spacing: 1px; }
+      50% { transform: translateX(3px); letter-spacing: 1.7px; }
+    }
+
+    @keyframes fadeRise {
+      0% { opacity: 0; transform: translateY(14px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes photoReveal {
+      0% { opacity: 0; transform: translateX(28px) scale(0.96); }
+      100% { opacity: 1; transform: translateX(0) scale(1); }
+    }
+
+    @keyframes badgeFloat {
+      0%,100% { transform: translateY(0); }
+      50% { transform: translateY(-4px); }
+    }
+
+    @keyframes lineGlow {
+      0%,100% { box-shadow: 0 0 0 rgba(195,146,103,0); opacity: 0.92; }
+      50% { box-shadow: 0 0 18px rgba(195,146,103,0.35); opacity: 1; }
+    }
+
+    @keyframes softFloat {
+      0%,100% { transform: translateY(0); opacity: 1; }
+      50% { transform: translateY(-4px); opacity: 0.92; }
+    }
+
+    @keyframes sparkleDrift {
+      0%,100% { transform: translateY(0); opacity: 0.78; }
+      50% { transform: translateY(-3px); opacity: 1; }
+    }
+
     /* =========================================================
        15. RESPONSIVE TABLET
     ========================================================= */
@@ -577,6 +924,8 @@
         top: auto;
         bottom: 16px;
         right: 18px;
+        width: 210px;
+        height: 42px;
       }
 
       .left-divider,
@@ -649,7 +998,9 @@
     <div class="topbar">
       <div class="brand">
         <span class="brand-icon"></span>
-        <span>LOGO</span>
+        <span class="brand-text" aria-label="Pirstton">
+          <span>P</span><span>I</span><span>R</span><span>S</span><span>T</span><span>T</span><span>O</span><span>N</span>
+        </span>
       </div>
 
       <nav class="nav">
@@ -660,7 +1011,10 @@
         <a href="#">FAQ</a>
       </nav>
 
-      <a class="kids-button" href="pirstton-kids.html">Pirsttons Kids</a>
+      <a class="kids-button" href="pirstton-kids.html" aria-label="Pirstton Kids">
+        <span class="kids-label"><span class="kids-mini">PIRSTTON</span><span class="kids-big">KIDS</span></span>
+        <span class="sparkle" aria-hidden="true"></span>
+      </a>
     </div>
 
     <!-- =======================================================
@@ -735,7 +1089,7 @@
       <div class="button-stack">
         <a class="hero-button primary" href="#">READ MORE</a>
         <a class="hero-button secondary" href="resultados.html">RESULTADOS ACADÉMICOS</a>
-        <a class="hero-button secondary" href="Examen Simulacro.html">EXAMEN SIMULACRO</a>
+        <a class="hero-button secondary" href="examen-simulacro.html">EXAMEN SIMULACRO</a>
       </div>
 
       <!-- =====================================================
