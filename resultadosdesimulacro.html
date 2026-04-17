@@ -1,1 +1,1716 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pirstton System | Resultados de Simulacro</title>
+  <style>
+    /* =========================================================
+       1. VARIABLES GLOBALES
+       ========================================================= */
+    :root {
+      --bg: #060606;
+      --bg-soft: #0f0f0f;
+      --panel: rgba(24, 24, 24, 0.92);
+      --panel-soft: rgba(20, 20, 20, 0.9);
+      --panel-border: rgba(255, 255, 255, 0.06);
+      --panel-border-strong: rgba(255, 255, 255, 0.1);
+      --text: #f7f7f7;
+      --muted: rgba(255, 255, 255, 0.68);
+      --muted-2: rgba(255, 255, 255, 0.5);
+      --track: rgba(255, 255, 255, 0.06);
+      --track-2: rgba(255, 255, 255, 0.08);
+      --shadow-main: 0 20px 50px rgba(0, 0, 0, 0.34);
+      --shadow-soft: 0 14px 34px rgba(0, 0, 0, 0.24);
+      --radius-xl: 28px;
+      --radius-lg: 24px;
+      --radius-md: 18px;
+      --radius-sm: 14px;
+      --success: #22c55e;
+      --danger: #ef4444;
+      --warning: #f59e0b;
+      --info: #d8d8d8;
+      --glow-low: rgba(255, 108, 108, 0.55);
+      --glow-medium: rgba(255, 193, 92, 0.48);
+      --glow-high: rgba(110, 255, 175, 0.38);
+      --font: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
 
+    /* =========================================================
+       2. RESET Y BASE
+       ========================================================= */
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      min-height: 100%;
+      background:
+        radial-gradient(circle at 12% 16%, rgba(255,255,255,0.055), transparent 18%),
+        radial-gradient(circle at 88% 9%, rgba(255,255,255,0.045), transparent 17%),
+        radial-gradient(circle at 88% 80%, rgba(255,255,255,0.035), transparent 18%),
+        linear-gradient(180deg, #070707 0%, #040404 100%);
+      color: var(--text);
+      font-family: var(--font);
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.016) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.014) 1px, transparent 1px);
+      background-size: 4px 4px;
+      opacity: 0.16;
+      mix-blend-mode: screen;
+    }
+
+    button, input, textarea, select {
+      font: inherit;
+    }
+
+    /* =========================================================
+       3. LAYOUT GENERAL
+       ========================================================= */
+    .page {
+      width: min(1070px, calc(100% - 52px));
+      margin: 0 auto;
+      padding: 62px 0 56px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 20px;
+      padding-bottom: 24px;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      margin-bottom: 28px;
+    }
+
+    .system-label {
+      margin: 0 0 8px;
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.72);
+    }
+
+    .main-title {
+      margin: 0;
+      font-size: clamp(44px, 4vw, 62px);
+      line-height: 0.98;
+      letter-spacing: -0.06em;
+      font-weight: 900;
+    }
+
+    .student-summary {
+      text-align: right;
+      padding-top: 4px;
+      min-width: 240px;
+    }
+
+    .student-name {
+      margin: 0 0 3px;
+      font-size: 18px;
+      font-weight: 700;
+      color: rgba(255,255,255,0.96);
+    }
+
+    .student-meta,
+    .student-date {
+      margin: 0;
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    /* =========================================================
+       4. NAVEGACIÓN DE PESTAÑAS
+       ========================================================= */
+    .tabs {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 0;
+      background: rgba(26, 26, 26, 0.92);
+      border: 1px solid rgba(255,255,255,0.04);
+      border-radius: 18px;
+      padding: 4px;
+      margin-bottom: 32px;
+      box-shadow: var(--shadow-soft);
+    }
+
+    .tab-button {
+      min-height: 54px;
+      border: 0;
+      border-radius: 14px;
+      background: transparent;
+      color: rgba(255,255,255,0.72);
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.18s ease, color 0.18s ease, transform 0.18s ease;
+    }
+
+    .tab-button:hover { transform: translateY(-1px); }
+
+    .tab-button.active {
+      background: #ececec;
+      color: #111111;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.6), 0 10px 18px rgba(0,0,0,0.18);
+    }
+
+    .tab-panel {
+      display: none;
+      animation: fadeIn 0.24s ease;
+    }
+
+    .tab-panel.active { display: block; }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* =========================================================
+       5. TARJETAS BASE
+       ========================================================= */
+    .grid {
+      display: grid;
+      gap: 24px;
+    }
+
+    .grid-summary-top {
+      grid-template-columns: 1.28fr 0.9fr 0.9fr;
+      align-items: stretch;
+    }
+
+    .grid-summary-bottom {
+      grid-template-columns: 1fr 1fr;
+      margin-top: 24px;
+    }
+
+    .stack {
+      display: grid;
+      gap: 20px;
+    }
+
+    .card {
+      background: linear-gradient(180deg, rgba(26,26,26,0.94), rgba(19,19,19,0.92));
+      border: 1px solid var(--panel-border);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-main);
+      padding: 26px 26px 28px;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+
+    .section-card {
+      background: linear-gradient(180deg, rgba(25,25,25,0.94), rgba(18,18,18,0.92));
+      border: 1px solid var(--panel-border);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow-main);
+      padding: 28px 26px 26px;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+
+    .card-heading,
+    .section-heading {
+      margin: 0 0 16px;
+      font-size: 15px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      font-weight: 800;
+      color: rgba(255,255,255,0.9);
+      padding-bottom: 12px;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .metric-title {
+      margin: 0 0 8px;
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-weight: 800;
+      color: rgba(255,255,255,0.76);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .metric-value {
+      margin: 0;
+      font-size: 28px;
+      font-weight: 900;
+      line-height: 1;
+      letter-spacing: -0.04em;
+    }
+
+    .metric-sub {
+      margin: 10px 0 0;
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    /* =========================================================
+       6. RESUMEN EJECUTIVO
+       ========================================================= */
+    .score-card {
+      min-height: 236px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .score-card::after {
+      content: "";
+      position: absolute;
+      inset: auto 18% -60px 18%;
+      height: 120px;
+      filter: blur(40px);
+      opacity: 0.28;
+      pointer-events: none;
+      background: var(--glow-low);
+      transition: background 0.2s ease;
+    }
+
+    .score-card.level-medium::after { background: var(--glow-medium); }
+    .score-card.level-high::after,
+    .score-card.level-excellent::after { background: var(--glow-high); }
+
+    .score-big {
+      margin: 8px 0 14px;
+      font-size: clamp(56px, 6vw, 82px);
+      line-height: 0.95;
+      font-weight: 900;
+      letter-spacing: -0.08em;
+      position: relative;
+      z-index: 1;
+    }
+
+    .level-pill {
+      position: relative;
+      z-index: 1;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 44px;
+      padding: 0 20px;
+      border-radius: 999px;
+      font-size: 14px;
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      border: 1px solid rgba(255,255,255,0.1);
+      box-shadow: 0 0 0 1px rgba(255,255,255,0.02), 0 0 18px rgba(255,120,120,0.28);
+      color: #ff9898;
+      background: rgba(255, 89, 89, 0.08);
+    }
+
+    .level-pill.medium {
+      color: #ffcf7a;
+      background: rgba(255, 180, 64, 0.08);
+      box-shadow: 0 0 0 1px rgba(255,255,255,0.02), 0 0 18px rgba(255,196,95,0.18);
+    }
+
+    .level-pill.high,
+    .level-pill.excellent {
+      color: #90f0b2;
+      background: rgba(79, 216, 132, 0.08);
+      box-shadow: 0 0 0 1px rgba(255,255,255,0.02), 0 0 18px rgba(110,255,175,0.16);
+    }
+
+    .mini-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    .metric-card {
+      min-height: 108px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .metric-value-row {
+      display: flex;
+      align-items: baseline;
+      gap: 6px;
+      margin-top: 6px;
+    }
+
+    .metric-value-row .main-number {
+      font-size: 24px;
+      font-weight: 900;
+      letter-spacing: -0.05em;
+    }
+
+    .metric-value-row .divider,
+    .metric-value-row .total-number {
+      font-size: 16px;
+      color: var(--muted);
+      font-weight: 600;
+    }
+
+    .status-green { color: #30d06b; }
+    .status-red { color: #ff6767; }
+
+    .diagnostic-text,
+    .technical-text,
+    .summary-list,
+    .recommendation-list {
+      margin: 0;
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.75;
+    }
+
+    .percentile-box {
+      display: flex;
+      align-items: baseline;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .percentile-number {
+      font-size: 48px;
+      font-weight: 900;
+      letter-spacing: -0.07em;
+      line-height: 1;
+    }
+
+    .percentile-label {
+      font-size: 28px;
+      color: var(--muted);
+      line-height: 1.2;
+    }
+
+    .percentile-track {
+      width: 100%;
+      height: 11px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.06);
+      overflow: hidden;
+      margin-bottom: 14px;
+    }
+
+    .percentile-fill {
+      width: 0%;
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, #ffffff, rgba(255,255,255,0.82));
+      transition: width 0.3s ease;
+    }
+
+    .exit-wrap {
+      display: flex;
+      justify-content: center;
+      margin-top: 40px;
+    }
+
+    .exit-button {
+      min-width: 285px;
+      min-height: 68px;
+      border: 0;
+      border-radius: 18px;
+      background: #f0f0f0;
+      color: #141414;
+      font-size: 16px;
+      font-weight: 800;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      cursor: pointer;
+      box-shadow: 0 16px 28px rgba(0,0,0,0.2);
+      transition: transform 0.18s ease;
+    }
+
+    .exit-button:hover { transform: translateY(-1px); }
+
+    /* =========================================================
+       7. ANÁLISIS DETALLADO
+       ========================================================= */
+    .area-list {
+      display: grid;
+      gap: 24px;
+      margin-top: 8px;
+    }
+
+    .area-item {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 20px;
+      align-items: center;
+    }
+
+    .area-main {
+      min-width: 0;
+    }
+
+    .area-title {
+      margin: 0 0 12px;
+      font-size: 17px;
+      font-weight: 700;
+      color: rgba(255,255,255,0.94);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .area-title svg {
+      width: 16px;
+      height: 16px;
+      color: rgba(255,255,255,0.76);
+      flex-shrink: 0;
+    }
+
+    .area-track {
+      width: 100%;
+      height: 10px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.05);
+      overflow: hidden;
+    }
+
+    .area-fill {
+      width: 0%;
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, rgba(255,255,255,0.42), rgba(255,255,255,0.96));
+      transition: width 0.28s ease;
+    }
+
+    .area-side {
+      text-align: right;
+      min-width: 134px;
+    }
+
+    .area-percentage {
+      margin: 0 0 18px;
+      font-size: 16px;
+      font-weight: 900;
+      color: rgba(255,255,255,0.95);
+    }
+
+    .area-detail {
+      margin: 0;
+      font-size: 14px;
+      color: var(--muted);
+    }
+
+    .analysis-bottom {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      margin-top: 24px;
+    }
+
+    .bullet-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: grid;
+      gap: 12px;
+    }
+
+    .bullet-list li {
+      color: var(--muted);
+      line-height: 1.72;
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+    }
+
+    .bullet-list li::before {
+      content: "•";
+      color: rgba(255,255,255,0.92);
+      font-weight: 900;
+      line-height: 1.2;
+      margin-top: 1px;
+    }
+
+    /* =========================================================
+       8. REVISIÓN DE RESPUESTAS
+       ========================================================= */
+    .review-list {
+      display: grid;
+      gap: 14px;
+    }
+
+    .review-item {
+      border-radius: 18px;
+      border: 1px solid rgba(255,255,255,0.05);
+      background: linear-gradient(180deg, rgba(33,33,33,0.9), rgba(24,24,24,0.9));
+      overflow: hidden;
+      transition: border-color 0.18s ease, background 0.18s ease;
+    }
+
+    .review-item.open {
+      border-color: rgba(255,255,255,0.1);
+      background: linear-gradient(180deg, rgba(36,36,36,0.92), rgba(25,25,25,0.92));
+    }
+
+    .review-toggle {
+      width: 100%;
+      border: 0;
+      background: transparent;
+      color: inherit;
+      padding: 16px 18px;
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr) auto auto;
+      gap: 16px;
+      align-items: center;
+      text-align: left;
+      cursor: pointer;
+    }
+
+    .review-number {
+      width: 32px;
+      height: 32px;
+      border-radius: 10px;
+      border: 1px solid rgba(255,255,255,0.06);
+      background: rgba(255,255,255,0.02);
+      display: grid;
+      place-items: center;
+      font-size: 13px;
+      color: rgba(255,255,255,0.6);
+      flex-shrink: 0;
+    }
+
+    .review-question {
+      min-width: 0;
+      font-size: 16px;
+      font-weight: 500;
+      color: rgba(255,255,255,0.94);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .review-status {
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.74);
+    }
+
+    .review-status.correcta { color: #8be0a8; }
+    .review-status.incorrecta { color: #ff8c8c; }
+    .review-status.omision { color: #e3e3e3; }
+
+    .review-chevron {
+      width: 18px;
+      height: 18px;
+      transition: transform 0.18s ease;
+      color: rgba(255,255,255,0.74);
+    }
+
+    .review-item.open .review-chevron {
+      transform: rotate(180deg);
+    }
+
+    .review-content {
+      display: none;
+      padding: 0 18px 20px 18px;
+    }
+
+    .review-item.open .review-content {
+      display: block;
+    }
+
+    .review-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+
+    .review-detail-card {
+      border-radius: 16px;
+      background: rgba(255,255,255,0.02);
+      border: 1px solid rgba(255,255,255,0.05);
+      padding: 14px 14px 12px;
+    }
+
+    .review-detail-label {
+      margin: 0 0 8px;
+      font-size: 11px;
+      font-weight: 800;
+      color: rgba(255,255,255,0.58);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    .review-detail-value {
+      margin: 0;
+      font-size: 14px;
+      line-height: 1.65;
+      color: rgba(255,255,255,0.9);
+      word-break: break-word;
+    }
+
+    .review-options {
+      display: grid;
+      gap: 10px;
+    }
+
+    .review-option {
+      border-radius: 14px;
+      padding: 12px 14px;
+      background: rgba(255,255,255,0.025);
+      border: 1px solid rgba(255,255,255,0.05);
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+    }
+
+    .review-option.correct-answer { border-color: rgba(84, 214, 133, 0.34); }
+    .review-option.student-answer { border-color: rgba(255,255,255,0.16); }
+    .review-option.student-wrong { border-color: rgba(255,104,104,0.28); }
+
+    .option-mark {
+      width: 26px;
+      height: 26px;
+      border-radius: 9px;
+      display: grid;
+      place-items: center;
+      font-size: 12px;
+      font-weight: 800;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.06);
+      color: rgba(255,255,255,0.86);
+      flex-shrink: 0;
+    }
+
+    .review-option-text {
+      font-size: 14px;
+      line-height: 1.6;
+      color: rgba(255,255,255,0.86);
+    }
+
+    .empty-state {
+      border-radius: var(--radius-xl);
+      padding: 34px 24px;
+      text-align: center;
+      background: linear-gradient(180deg, rgba(25,25,25,0.94), rgba(18,18,18,0.92));
+      border: 1px solid rgba(255,255,255,0.06);
+      box-shadow: var(--shadow-main);
+    }
+
+    .empty-state h2 {
+      margin: 0 0 10px;
+      font-size: 24px;
+      letter-spacing: -0.04em;
+    }
+
+    .empty-state p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.7;
+      max-width: 700px;
+      margin-inline: auto;
+    }
+
+    .empty-actions {
+      margin-top: 22px;
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .subtle-button {
+      min-height: 48px;
+      padding: 0 18px;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(255,255,255,0.03);
+      color: var(--text);
+      cursor: pointer;
+    }
+
+    .debug-note {
+      margin-top: 18px;
+      font-size: 13px;
+      color: rgba(255,255,255,0.5);
+    }
+
+    /* =========================================================
+       9. RESPONSIVE
+       ========================================================= */
+    @media (max-width: 980px) {
+      .page { width: min(100% - 28px, 980px); padding-top: 34px; }
+      .topbar { flex-direction: column; align-items: flex-start; }
+      .student-summary { text-align: left; }
+      .grid-summary-top,
+      .grid-summary-bottom,
+      .analysis-bottom { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 760px) {
+      .tabs { grid-template-columns: 1fr; }
+      .tab-button { min-height: 50px; }
+      .mini-grid,
+      .review-grid { grid-template-columns: 1fr; }
+      .review-toggle {
+        grid-template-columns: auto minmax(0, 1fr) auto;
+      }
+      .review-chevron { display: none; }
+      .review-status { justify-self: end; }
+      .review-question { white-space: normal; }
+      .area-item {
+        grid-template-columns: 1fr;
+        gap: 12px;
+      }
+      .area-side {
+        text-align: left;
+        min-width: 0;
+      }
+      .exit-button {
+        width: 100%;
+        min-width: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <!-- =======================================================
+         CABECERA SUPERIOR
+         ======================================================= -->
+    <header class="topbar">
+      <div>
+        <p class="system-label">Pirstton System • Reporte Oficial</p>
+        <h1 class="main-title">Análisis de Rendimiento</h1>
+      </div>
+
+      <div class="student-summary">
+        <p class="student-name" id="studentName">—</p>
+        <p class="student-meta" id="studentMeta">—</p>
+        <p class="student-date" id="studentDate">—</p>
+      </div>
+    </header>
+
+    <!-- =======================================================
+         ESTADO VACÍO / ERROR DE DATOS
+         ======================================================= -->
+    <section class="empty-state" id="emptyState" hidden>
+      <h2>No se encontró un resultado de examen para mostrar</h2>
+      <p>
+        Esta pantalla necesita leer el resultado guardado al finalizar el examen. Si abriste el archivo directamente,
+        sin terminar una evaluación, no habrá datos reales para analizar.
+      </p>
+      <div class="empty-actions">
+        <button class="subtle-button" id="loadDemoButton" type="button">Cargar demo técnica</button>
+        <button class="subtle-button" id="goBackButton" type="button">Volver al acceso</button>
+      </div>
+      <p class="debug-note">
+        Importante: el archivo del examen todavía redirige a <strong>resultados.html</strong>. Luego debes cambiarlo a
+        <strong>resultadossimulacro.html</strong> en tu otro archivo.
+      </p>
+    </section>
+
+    <!-- =======================================================
+         CONTENIDO PRINCIPAL CON RESULTADOS
+         ======================================================= -->
+    <section id="resultsApp" hidden>
+      <!-- NAVEGACIÓN DE PESTAÑAS -->
+      <nav class="tabs" aria-label="Secciones del reporte">
+        <button class="tab-button active" type="button" data-tab="summary">Resumen Ejecutivo</button>
+        <button class="tab-button" type="button" data-tab="analysis">Análisis Detallado</button>
+        <button class="tab-button" type="button" data-tab="review">Revisión de Respuestas</button>
+      </nav>
+
+      <!-- =====================================================
+           PESTAÑA 1: RESUMEN EJECUTIVO
+           ===================================================== -->
+      <section class="tab-panel active" id="panel-summary" data-panel="summary">
+        <div class="grid grid-summary-top">
+          <article class="card score-card" id="scoreCard">
+            <h2 class="card-heading">Puntaje Estandarizado</h2>
+            <p class="score-big" id="standardizedScore">0.000</p>
+            <div class="level-pill" id="levelBadge">Nivel: Bajo</div>
+          </article>
+
+          <div class="stack">
+            <article class="card metric-card">
+              <p class="metric-title">
+                <span aria-hidden="true">◷</span>
+                Tiempo Empleado
+              </p>
+              <p class="metric-value" id="timeSpentText">No disponible</p>
+            </article>
+
+            <article class="card metric-card">
+              <p class="metric-title status-green">
+                <span aria-hidden="true">◉</span>
+                Aciertos
+              </p>
+              <div class="metric-value-row">
+                <span class="main-number" id="correctCount">0</span>
+                <span class="divider">/</span>
+                <span class="total-number" id="correctTotal">0</span>
+              </div>
+            </article>
+          </div>
+
+          <div class="stack">
+            <article class="card metric-card">
+              <p class="metric-title">
+                <span aria-hidden="true">◎</span>
+                Precisión
+              </p>
+              <p class="metric-value" id="precisionText">0.0%</p>
+            </article>
+
+            <article class="card metric-card">
+              <p class="metric-title status-red">
+                <span aria-hidden="true">✕</span>
+                Errores / Omisiones
+              </p>
+              <div class="metric-value-row">
+                <span class="main-number" id="errorBlankCount">0</span>
+                <span class="divider">/</span>
+                <span class="total-number" id="errorBlankTotal">0</span>
+              </div>
+            </article>
+          </div>
+        </div>
+
+        <div class="grid-summary-bottom">
+          <article class="section-card">
+            <h2 class="section-heading">Diagnóstico Automático</h2>
+            <p class="diagnostic-text" id="diagnosticText"></p>
+          </article>
+
+          <article class="section-card">
+            <h2 class="section-heading">Comparativa Percentil</h2>
+            <div class="percentile-box">
+              <span class="percentile-number" id="percentileValue">10</span>
+              <span class="percentile-label">Percentil simulado</span>
+            </div>
+            <div class="percentile-track" aria-hidden="true">
+              <div class="percentile-fill" id="percentileFill"></div>
+            </div>
+            <p class="metric-sub" id="percentileDescription"></p>
+          </article>
+        </div>
+
+        <div class="exit-wrap">
+          <button class="exit-button" id="exitButton" type="button">
+            <span aria-hidden="true">↻</span>
+            Finalizar Sesión y Salir
+          </button>
+        </div>
+      </section>
+
+      <!-- =====================================================
+           PESTAÑA 2: ANÁLISIS DETALLADO
+           ===================================================== -->
+      <section class="tab-panel" id="panel-analysis" data-panel="analysis">
+        <article class="section-card">
+          <h2 class="section-heading">Rendimiento por Áreas Temáticas</h2>
+          <div class="area-list" id="areaList"></div>
+        </article>
+
+        <div class="analysis-bottom">
+          <article class="section-card">
+            <h2 class="section-heading">Recomendaciones Técnicas</h2>
+            <ul class="bullet-list" id="recommendationsList"></ul>
+          </article>
+
+          <article class="section-card">
+            <h2 class="section-heading">Resumen Técnico</h2>
+            <ul class="bullet-list" id="technicalSummaryList"></ul>
+          </article>
+        </div>
+      </section>
+
+      <!-- =====================================================
+           PESTAÑA 3: REVISIÓN DE RESPUESTAS
+           ===================================================== -->
+      <section class="tab-panel" id="panel-review" data-panel="review">
+        <article class="section-card">
+          <h2 class="section-heading">Auditoría de Respuestas</h2>
+          <div class="review-list" id="reviewList"></div>
+        </article>
+      </section>
+    </section>
+  </main>
+
+  <script>
+    // =========================================================
+    // 1. CONFIGURACIÓN GENERAL
+    // =========================================================
+    const STORAGE_KEYS = {
+      result: 'pirstton_exam_result',
+      session: 'pirstton_exam_session',
+      student: 'pirstton_student',
+      studentActive: 'estudianteActivo',
+      access: 'pirstton_exam_access'
+    };
+
+    // Ajusta esta ruta si tu acceso principal usa otro nombre exacto.
+    const EXIT_PAGE = 'Examensimulacro.html';
+
+    // =========================================================
+    // 2. ELEMENTOS DEL DOM
+    // =========================================================
+    const resultsApp = document.getElementById('resultsApp');
+    const emptyState = document.getElementById('emptyState');
+    const loadDemoButton = document.getElementById('loadDemoButton');
+    const goBackButton = document.getElementById('goBackButton');
+
+    const studentName = document.getElementById('studentName');
+    const studentMeta = document.getElementById('studentMeta');
+    const studentDate = document.getElementById('studentDate');
+
+    const standardizedScore = document.getElementById('standardizedScore');
+    const levelBadge = document.getElementById('levelBadge');
+    const scoreCard = document.getElementById('scoreCard');
+    const timeSpentText = document.getElementById('timeSpentText');
+    const precisionText = document.getElementById('precisionText');
+    const correctCount = document.getElementById('correctCount');
+    const correctTotal = document.getElementById('correctTotal');
+    const errorBlankCount = document.getElementById('errorBlankCount');
+    const errorBlankTotal = document.getElementById('errorBlankTotal');
+    const diagnosticText = document.getElementById('diagnosticText');
+    const percentileValue = document.getElementById('percentileValue');
+    const percentileFill = document.getElementById('percentileFill');
+    const percentileDescription = document.getElementById('percentileDescription');
+    const exitButton = document.getElementById('exitButton');
+
+    const areaList = document.getElementById('areaList');
+    const recommendationsList = document.getElementById('recommendationsList');
+    const technicalSummaryList = document.getElementById('technicalSummaryList');
+    const reviewList = document.getElementById('reviewList');
+
+    // =========================================================
+    // 3. PUNTO DE ENTRADA
+    // =========================================================
+    initializeResultsPage();
+
+    function initializeResultsPage() {
+      const result = getStoredResult();
+
+      if (!result) {
+        showEmptyState();
+        return;
+      }
+
+      renderResults(result);
+      wireTabs();
+      wireExit();
+    }
+
+    // =========================================================
+    // 4. OBTENCIÓN DE DATOS
+    // =========================================================
+    function getStoredResult() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEYS.result);
+        if (!raw) return null;
+
+        const parsed = JSON.parse(raw);
+        if (!parsed || !Array.isArray(parsed.questions) || !Array.isArray(parsed.answers)) {
+          return null;
+        }
+
+        return parsed;
+      } catch (error) {
+        console.warn('No se pudo leer el resultado almacenado.', error);
+        return null;
+      }
+    }
+
+    function showEmptyState() {
+      emptyState.hidden = false;
+      resultsApp.hidden = true;
+
+      loadDemoButton.addEventListener('click', () => {
+        const demo = buildDemoResult();
+        localStorage.setItem(STORAGE_KEYS.result, JSON.stringify(demo));
+        renderResults(demo);
+        emptyState.hidden = true;
+        resultsApp.hidden = false;
+        wireTabs();
+        wireExit();
+      });
+
+      goBackButton.addEventListener('click', () => {
+        window.location.href = EXIT_PAGE;
+      });
+    }
+
+    // =========================================================
+    // 5. RENDER PRINCIPAL
+    // =========================================================
+    function renderResults(result) {
+      emptyState.hidden = true;
+      resultsApp.hidden = false;
+
+      const metrics = computeMetrics(result);
+      renderHeader(metrics, result);
+      renderSummary(metrics);
+      renderAnalysis(metrics);
+      renderReview(metrics);
+    }
+
+    // =========================================================
+    // 6. CÁLCULOS DE NEGOCIO
+    // =========================================================
+    function computeMetrics(result) {
+      const totalQuestions = Array.isArray(result.questions) ? result.questions.length : 0;
+      const answers = Array.isArray(result.answers) ? result.answers : [];
+      const questions = Array.isArray(result.questions) ? result.questions : [];
+
+      let correct = 0;
+      let incorrect = 0;
+      let blank = 0;
+      let answered = 0;
+
+      const reviewItems = questions.map((question, index) => {
+        const answerIndex = answers[index];
+        const hasAnswer = Number.isInteger(answerIndex);
+        const correctIndex = Number.isInteger(question.correctAnswer) ? question.correctAnswer : null;
+        const isCorrect = hasAnswer && correctIndex !== null && answerIndex === correctIndex;
+
+        if (!hasAnswer) {
+          blank += 1;
+        } else {
+          answered += 1;
+          if (isCorrect) {
+            correct += 1;
+          } else {
+            incorrect += 1;
+          }
+        }
+
+        const derivedArea = deriveArea(question, index);
+        const status = !hasAnswer ? 'omision' : isCorrect ? 'correcta' : 'incorrecta';
+
+        return {
+          index,
+          number: index + 1,
+          question,
+          area: derivedArea,
+          answerIndex,
+          correctIndex,
+          hasAnswer,
+          isCorrect,
+          status,
+          answerLabel: hasAnswer ? optionLetter(answerIndex) : '—',
+          correctLabel: correctIndex !== null ? optionLetter(correctIndex) : '—',
+          answerText: hasAnswer ? safeOption(question.options, answerIndex) : 'Sin respuesta registrada.',
+          correctText: correctIndex !== null ? safeOption(question.options, correctIndex) : 'No disponible.'
+        };
+      });
+
+      const standardizedScoreValue = totalQuestions > 0 ? (correct / totalQuestions) * 100 : 0;
+      const standardizedScoreText = standardizedScoreValue.toFixed(3);
+
+      // Precisión: correctas / respondidas. Si no respondió ninguna, 0.0%
+      const precisionValue = answered > 0 ? (correct / answered) * 100 : 0;
+      const precisionTextValue = precisionValue.toFixed(1) + '%';
+
+      // Tiempo: esta versión solo puede calcular si la data lo trae.
+      const durationSeconds = extractDurationSeconds(result);
+      const timeSpentDisplay = durationSeconds === null ? 'No disponible' : formatDuration(durationSeconds);
+
+      const blankRatio = totalQuestions > 0 ? (blank / totalQuestions) * 100 : 0;
+      const incorrectRatio = totalQuestions > 0 ? (incorrect / totalQuestions) * 100 : 0;
+      const answeredRatio = totalQuestions > 0 ? (answered / totalQuestions) * 100 : 0;
+
+      const level = classifyLevel(standardizedScoreValue);
+      const percentile = computeSimulatedPercentile(standardizedScoreValue, precisionValue, blankRatio);
+      const areaStats = buildAreaStats(reviewItems);
+      const weakestAreas = [...areaStats].sort((a, b) => a.percentage - b.percentage).slice(0, 2);
+      const strongestAreas = [...areaStats].sort((a, b) => b.percentage - a.percentage).slice(0, 2);
+
+      return {
+        result,
+        totalQuestions,
+        answered,
+        correct,
+        incorrect,
+        blank,
+        reviewItems,
+        standardizedScoreValue,
+        standardizedScoreText,
+        precisionValue,
+        precisionTextValue,
+        durationSeconds,
+        timeSpentDisplay,
+        blankRatio,
+        incorrectRatio,
+        answeredRatio,
+        level,
+        percentile,
+        areaStats,
+        weakestAreas,
+        strongestAreas,
+        diagnostic: buildDiagnostic(level, standardizedScoreValue, precisionValue, blankRatio, weakestAreas),
+        recommendations: buildRecommendations(level, precisionValue, blankRatio, weakestAreas),
+        technicalSummary: buildTechnicalSummary(result, standardizedScoreValue, answered, correct, incorrect, blank, precisionValue, percentile, strongestAreas, weakestAreas, durationSeconds)
+      };
+    }
+
+    function classifyLevel(score) {
+      if (score >= 85) {
+        return { key: 'excellent', label: 'Nivel: Excelente', cssClass: 'excellent' };
+      }
+      if (score >= 65) {
+        return { key: 'high', label: 'Nivel: Alto', cssClass: 'high' };
+      }
+      if (score >= 40) {
+        return { key: 'medium', label: 'Nivel: Medio', cssClass: 'medium' };
+      }
+      return { key: 'low', label: 'Nivel: Bajo', cssClass: 'low' };
+    }
+
+    function computeSimulatedPercentile(score, precision, blankRatio) {
+      const weighted = (score * 0.7) + (precision * 0.2) + ((100 - blankRatio) * 0.1);
+      const normalized = Math.round(10 + (weighted * 0.89));
+      return Math.max(10, Math.min(normalized, 99));
+    }
+
+    function buildAreaStats(reviewItems) {
+      const areaMap = new Map();
+      const orderedAreas = ['Razonamiento Matemático', 'Comprensión Lectora', 'Lógica', 'Conocimiento General'];
+
+      orderedAreas.forEach((area) => {
+        areaMap.set(area, { name: area, total: 0, correct: 0, percentage: 0, icon: areaIcon(area) });
+      });
+
+      reviewItems.forEach((item) => {
+        const area = areaMap.get(item.area) || areaMap.get('Conocimiento General');
+        area.total += 1;
+        if (item.isCorrect) {
+          area.correct += 1;
+        }
+      });
+
+      return orderedAreas.map((areaName) => {
+        const entry = areaMap.get(areaName);
+        entry.percentage = entry.total > 0 ? (entry.correct / entry.total) * 100 : 0;
+        return entry;
+      });
+    }
+
+    function deriveArea(question, index) {
+      const text = String(question.question || '').toLowerCase();
+      const course = String(question.course || '').toLowerCase();
+
+      if (course.includes('mat')) {
+        if (
+          text.includes('secuencia') ||
+          text.includes('patrón') ||
+          text.includes('promedio') ||
+          text.includes('valor absoluto') ||
+          text.includes('irracional') ||
+          text.includes('mayor')
+        ) {
+          return 'Lógica';
+        }
+        return 'Razonamiento Matemático';
+      }
+
+      if (course.includes('com')) {
+        if (
+          text.includes('texto') ||
+          text.includes('lectura') ||
+          text.includes('idea principal') ||
+          text.includes('inferir') ||
+          text.includes('resumen') ||
+          text.includes('conclusión') ||
+          text.includes('título')
+        ) {
+          return 'Comprensión Lectora';
+        }
+        if (
+          text.includes('noticia') ||
+          text.includes('función del lenguaje') ||
+          text.includes('sinónimo') ||
+          text.includes('antónimo') ||
+          text.includes('conector') ||
+          text.includes('tilde') ||
+          text.includes('verbo') ||
+          text.includes('adverbio')
+        ) {
+          return 'Conocimiento General';
+        }
+        return index % 2 === 0 ? 'Comprensión Lectora' : 'Conocimiento General';
+      }
+
+      return 'Conocimiento General';
+    }
+
+    function buildDiagnostic(level, score, precision, blankRatio, weakestAreas) {
+      const weakNames = weakestAreas.filter(area => area.total > 0).map(area => area.name.toLowerCase());
+      const weakText = weakNames.length > 0 ? ` Las áreas con mayor necesidad de refuerzo son ${joinHuman(weakNames)}.` : '';
+
+      if (level.key === 'excellent') {
+        return `Desempeño sobresaliente. El estudiante resolvió la evaluación con dominio técnico alto, baja tasa de error y consistencia en la mayoría de indicadores. Conviene mantener la exigencia y trabajar pulido fino para sostener el estándar competitivo.${weakText}`;
+      }
+
+      if (level.key === 'high') {
+        return `Buen rendimiento general. Existe base académica sólida y capacidad de resolución efectiva, aunque todavía hay margen para elevar precisión y velocidad de consolidación en situaciones de mayor presión.${weakText}`;
+      }
+
+      if (level.key === 'medium') {
+        const omissionHint = blankRatio >= 20 ? ' Además, la cantidad de omisiones sugiere inseguridad o manejo de tiempo imperfecto.' : '';
+        return `Rendimiento intermedio. El estudiante muestra comprensión parcial de los contenidos, pero todavía no alcanza estabilidad suficiente para sostener un resultado alto de forma consistente.${omissionHint}${weakText}`;
+      }
+
+      const precisionHint = precision < 45 ? ' La relación entre respuestas marcadas y aciertos confirma que no solo faltó tiempo, sino también control conceptual.' : ' La baja producción útil sugiere vacíos básicos y poca recuperación efectiva durante la prueba.';
+      return `Bajo desempeño. Recomendamos revisión integral de conceptos fundamentales y tutoría personalizada en áreas críticas.${precisionHint}${weakText}`;
+    }
+
+    function buildRecommendations(level, precision, blankRatio, weakestAreas) {
+      const recommendations = [];
+      const weakAreasFiltered = weakestAreas.filter(area => area.total > 0);
+
+      if (weakAreasFiltered.length > 0) {
+        recommendations.push(`Priorizar un bloque intensivo de refuerzo en ${joinHuman(weakAreasFiltered.map(area => area.name.toLowerCase()))}, porque ahí se concentra la pérdida principal de puntos.`);
+      }
+
+      if (blankRatio >= 20) {
+        recommendations.push('Aplicar simulacros cronometrados cortos para reducir omisiones y mejorar la toma de decisión bajo límite de tiempo.');
+      } else {
+        recommendations.push('Mantener práctica cronometrada para consolidar velocidad sin sacrificar limpieza técnica en la marcación final.');
+      }
+
+      if (precision < 55) {
+        recommendations.push('Corregir el patrón de error preguntando siempre: qué me pide, qué dato tengo y por qué esta alternativa sí o no corresponde.');
+      } else if (precision < 75) {
+        recommendations.push('Enfocar el trabajo en precisión fina: menos impulsividad, más validación de procedimiento y descarte consciente de distractores.');
+      } else {
+        recommendations.push('Subir dificultad progresivamente para convertir una buena precisión en ventaja competitiva real frente a estudiantes del mismo nivel.');
+      }
+
+      if (level.key === 'low' || level.key === 'medium') {
+        recommendations.push('Revisar semanalmente las preguntas falladas y convertirlas en una libreta de errores frecuentes con solución corregida y explicación corta.');
+      } else {
+        recommendations.push('Incorporar bancos de preguntas de mayor exigencia para evitar estancamiento y sostener curva ascendente de rendimiento.');
+      }
+
+      return recommendations.slice(0, 4);
+    }
+
+    function buildTechnicalSummary(result, score, answered, correct, incorrect, blank, precision, percentile, strongestAreas, weakestAreas, durationSeconds) {
+      const summary = [];
+      summary.push(`Puntaje estandarizado calculado sobre porcentaje de acierto total: ${score.toFixed(3)}.`);
+      summary.push(`Respuestas procesadas: ${answered} marcadas, ${correct} correctas, ${incorrect} incorrectas y ${blank} omisiones.`);
+      summary.push(`Precisión operativa: ${precision.toFixed(1)}% sobre respuestas efectivamente registradas.`);
+      summary.push(`Percentil simulado estimado en ${percentile}, usando rendimiento global, precisión y penalización por omisiones.`);
+
+      const best = strongestAreas.find(area => area.total > 0);
+      const worst = weakestAreas.find(area => area.total > 0);
+
+      if (best) {
+        summary.push(`Área relativamente más fuerte: ${best.name.toLowerCase()} con ${best.correct} de ${best.total} correctas (${best.percentage.toFixed(1)}%).`);
+      }
+
+      if (worst) {
+        summary.push(`Área de menor rendimiento: ${worst.name.toLowerCase()} con ${worst.correct} de ${worst.total} correctas (${worst.percentage.toFixed(1)}%).`);
+      }
+
+      if (durationSeconds === null) {
+        summary.push('Tiempo exacto no disponible: la versión actual del examen aún no persiste ese dato dentro del resultado final.');
+      } else {
+        summary.push(`Tiempo empleado registrado: ${formatDuration(durationSeconds)}.`);
+      }
+
+      if (result.status === 'timeout') {
+        summary.push('La evaluación fue cerrada por límite de tiempo, lo cual debe considerarse al interpretar la tasa de omisión.');
+      }
+
+      return summary;
+    }
+
+    function extractDurationSeconds(result) {
+      if (typeof result.durationSeconds === 'number' && Number.isFinite(result.durationSeconds)) {
+        return Math.max(0, Math.round(result.durationSeconds));
+      }
+
+      if (typeof result.timeSpentSeconds === 'number' && Number.isFinite(result.timeSpentSeconds)) {
+        return Math.max(0, Math.round(result.timeSpentSeconds));
+      }
+
+      if (
+        typeof result.examStartedAt === 'number' &&
+        typeof result.finishedAt === 'number' &&
+        result.finishedAt >= result.examStartedAt
+      ) {
+        return Math.round((result.finishedAt - result.examStartedAt) / 1000);
+      }
+
+      return null;
+    }
+
+    // =========================================================
+    // 7. RENDER: CABECERA
+    // =========================================================
+    function renderHeader(metrics, result) {
+      const student = result.student || {};
+      const levelLabel = formatLevelLabel(student.nivel);
+      const gradeLabel = student.grado || 'Grado no registrado';
+      const codeLabel = student.codigo || 'Código no registrado';
+
+      studentName.textContent = student.nombre || 'Estudiante no identificado';
+      studentMeta.textContent = `${codeLabel} • ${levelLabel} ${gradeLabel}`;
+      studentDate.textContent = formatSpanishDateTime(result.finishedAt || Date.now());
+    }
+
+    // =========================================================
+    // 8. RENDER: RESUMEN EJECUTIVO
+    // =========================================================
+    function renderSummary(metrics) {
+      standardizedScore.textContent = metrics.standardizedScoreText;
+      timeSpentText.textContent = metrics.timeSpentDisplay;
+      precisionText.textContent = metrics.precisionTextValue;
+      correctCount.textContent = String(metrics.correct);
+      correctTotal.textContent = String(metrics.totalQuestions);
+      errorBlankCount.textContent = String(metrics.incorrect + metrics.blank);
+      errorBlankTotal.textContent = String(metrics.totalQuestions);
+      diagnosticText.textContent = metrics.diagnostic;
+      percentileValue.textContent = String(metrics.percentile);
+      percentileFill.style.width = `${metrics.percentile}%`;
+      percentileDescription.textContent = `Tu desempeño está por encima del ${metrics.percentile}% de estudiantes de tu nivel en la base simulada.`;
+
+      levelBadge.textContent = metrics.level.label;
+      levelBadge.className = `level-pill ${metrics.level.cssClass}`;
+      scoreCard.className = `card score-card level-${metrics.level.key}`;
+    }
+
+    // =========================================================
+    // 9. RENDER: ANÁLISIS DETALLADO
+    // =========================================================
+    function renderAnalysis(metrics) {
+      areaList.innerHTML = '';
+      metrics.areaStats.forEach((area) => {
+        const item = document.createElement('div');
+        item.className = 'area-item';
+        item.innerHTML = `
+          <div class="area-main">
+            <p class="area-title">
+              ${area.icon}
+              <span>${area.name}</span>
+            </p>
+            <div class="area-track" aria-hidden="true">
+              <div class="area-fill" style="width:${area.percentage.toFixed(1)}%"></div>
+            </div>
+          </div>
+          <div class="area-side">
+            <p class="area-percentage">${area.percentage.toFixed(1)}%</p>
+            <p class="area-detail">${area.correct} de ${area.total} correctas</p>
+          </div>
+        `;
+        areaList.appendChild(item);
+      });
+
+      recommendationsList.innerHTML = metrics.recommendations
+        .map((text) => `<li>${escapeHtml(text)}</li>`)
+        .join('');
+
+      technicalSummaryList.innerHTML = metrics.technicalSummary
+        .map((text) => `<li>${escapeHtml(text)}</li>`)
+        .join('');
+    }
+
+    // =========================================================
+    // 10. RENDER: REVISIÓN DE RESPUESTAS
+    // =========================================================
+    function renderReview(metrics) {
+      reviewList.innerHTML = '';
+
+      metrics.reviewItems.forEach((item) => {
+        const article = document.createElement('article');
+        article.className = 'review-item';
+
+        const questionTextShort = String(item.question.question || 'Pregunta sin texto').replace(/<[^>]*>/g, '');
+        const statusLabel = item.status === 'correcta'
+          ? 'Correcta'
+          : item.status === 'incorrecta'
+            ? 'Incorrecta'
+            : 'Omisión';
+
+        article.innerHTML = `
+          <button class="review-toggle" type="button" aria-expanded="false">
+            <span class="review-number">${item.number}</span>
+            <span class="review-question">${escapeHtml(questionTextShort)}</span>
+            <span class="review-status ${item.status}">${statusLabel}</span>
+            <svg class="review-chevron" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <path d="M6 9L12 15L18 9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+
+          <div class="review-content">
+            <div class="review-grid">
+              <div class="review-detail-card">
+                <p class="review-detail-label">Estado de evaluación</p>
+                <p class="review-detail-value">${statusLabel}. Área detectada: ${escapeHtml(item.area)}.</p>
+              </div>
+              <div class="review-detail-card">
+                <p class="review-detail-label">Respuesta registrada</p>
+                <p class="review-detail-value">${item.hasAnswer ? `${item.answerLabel}. ${escapeHtml(item.answerText)}` : 'Sin respuesta registrada por el estudiante.'}</p>
+              </div>
+            </div>
+
+            <div class="review-detail-card" style="margin-bottom:16px;">
+              <p class="review-detail-label">Respuesta correcta</p>
+              <p class="review-detail-value">${item.correctLabel}. ${escapeHtml(item.correctText)}</p>
+            </div>
+
+            <div class="review-options">
+              ${buildReviewOptionsHtml(item)}
+            </div>
+          </div>
+        `;
+
+        const toggle = article.querySelector('.review-toggle');
+        toggle.addEventListener('click', () => {
+          const isOpen = article.classList.toggle('open');
+          toggle.setAttribute('aria-expanded', String(isOpen));
+        });
+
+        reviewList.appendChild(article);
+      });
+    }
+
+    function buildReviewOptionsHtml(item) {
+      const options = Array.isArray(item.question.options) ? item.question.options : [];
+
+      return options.map((option, index) => {
+        const classes = ['review-option'];
+        const isCorrectOption = index === item.correctIndex;
+        const isStudentOption = item.hasAnswer && index === item.answerIndex;
+
+        if (isCorrectOption) classes.push('correct-answer');
+        if (isStudentOption) classes.push('student-answer');
+        if (isStudentOption && !item.isCorrect) classes.push('student-wrong');
+
+        let suffix = '';
+        if (isCorrectOption && isStudentOption) {
+          suffix = ' • respuesta correcta marcada';
+        } else if (isCorrectOption) {
+          suffix = ' • clave correcta';
+        } else if (isStudentOption) {
+          suffix = ' • respuesta marcada';
+        }
+
+        return `
+          <div class="${classes.join(' ')}">
+            <span class="option-mark">${optionLetter(index)}</span>
+            <span class="review-option-text">${escapeHtml(option)}${escapeHtml(suffix)}</span>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // =========================================================
+    // 11. PESTAÑAS Y EVENTOS
+    // =========================================================
+    function wireTabs() {
+      const buttons = Array.from(document.querySelectorAll('.tab-button'));
+      const panels = Array.from(document.querySelectorAll('.tab-panel'));
+
+      buttons.forEach((button) => {
+        button.addEventListener('click', () => {
+          const target = button.dataset.tab;
+
+          buttons.forEach((btn) => btn.classList.toggle('active', btn === button));
+          panels.forEach((panel) => panel.classList.toggle('active', panel.dataset.panel === target));
+        });
+      });
+    }
+
+    function wireExit() {
+      exitButton.addEventListener('click', () => {
+        localStorage.removeItem(STORAGE_KEYS.result);
+        localStorage.removeItem(STORAGE_KEYS.session);
+        window.location.href = EXIT_PAGE;
+      });
+    }
+
+    // =========================================================
+    // 12. UTILIDADES
+    // =========================================================
+    function optionLetter(index) {
+      return String.fromCharCode(65 + index);
+    }
+
+    function safeOption(options, index) {
+      if (!Array.isArray(options) || !Number.isInteger(index)) return 'No disponible.';
+      return options[index] ?? 'No disponible.';
+    }
+
+    function formatLevelLabel(level) {
+      const safe = String(level || '').toLowerCase();
+      return safe.includes('sec') ? 'Secundaria' : 'Primaria';
+    }
+
+    function formatSpanishDateTime(timestamp) {
+      const date = new Date(timestamp || Date.now());
+      return new Intl.DateTimeFormat('es-PE', {
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric',
+        hour: 'numeric',
+        minute: '2-digit'
+      }).format(date);
+    }
+
+    function formatDuration(totalSeconds) {
+      const seconds = Math.max(0, Math.round(totalSeconds));
+      const minutesPart = Math.floor(seconds / 60);
+      const remainingSeconds = seconds % 60;
+      const hoursPart = Math.floor(minutesPart / 60);
+      const finalMinutes = minutesPart % 60;
+
+      if (hoursPart > 0) {
+        return `${hoursPart}h ${finalMinutes}m ${remainingSeconds}s`;
+      }
+      return `${finalMinutes}m ${remainingSeconds}s`;
+    }
+
+    function joinHuman(items) {
+      if (items.length === 0) return '';
+      if (items.length === 1) return items[0];
+      if (items.length === 2) return `${items[0]} y ${items[1]}`;
+      return `${items.slice(0, -1).join(', ')} y ${items.at(-1)}`;
+    }
+
+    function escapeHtml(text) {
+      return String(text)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
+    function areaIcon(area) {
+      switch (area) {
+        case 'Razonamiento Matemático':
+          return `<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="4" y="3" width="16" height="18" rx="2" stroke="currentColor" stroke-width="1.7"/><path d="M8 8H16" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/><path d="M8 12H10" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/><path d="M14 12H16" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/><path d="M8 16H10" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/><path d="M14 16H16" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>`;
+        case 'Comprensión Lectora':
+          return `<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 6.5C4 5.67 4.67 5 5.5 5H10C11.66 5 13 6.34 13 8V19C13 17.9 12.1 17 11 17H5.5C4.67 17 4 17.67 4 18.5V6.5Z" stroke="currentColor" stroke-width="1.7"/><path d="M20 6.5C20 5.67 19.33 5 18.5 5H14C12.34 5 11 6.34 11 8V19C11 17.9 11.9 17 13 17H18.5C19.33 17 20 17.67 20 18.5V6.5Z" stroke="currentColor" stroke-width="1.7"/></svg>`;
+        case 'Lógica':
+          return `<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M10 3H14V7H10V3Z" stroke="currentColor" stroke-width="1.7"/><path d="M5 10H9V14H5V10Z" stroke="currentColor" stroke-width="1.7"/><path d="M15 10H19V14H15V10Z" stroke="currentColor" stroke-width="1.7"/><path d="M10 17H14V21H10V17Z" stroke="currentColor" stroke-width="1.7"/><path d="M12 7V10" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/><path d="M9 12H15" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/><path d="M12 14V17" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>`;
+        default:
+          return `<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="8" stroke="currentColor" stroke-width="1.7"/><circle cx="12" cy="12" r="2.5" stroke="currentColor" stroke-width="1.7"/></svg>`;
+      }
+    }
+
+    // =========================================================
+    // 13. DEMO TÉCNICA PARA PREVISUALIZACIÓN
+    // =========================================================
+    function buildDemoResult() {
+      const questions = [
+        {
+          course: 'matematica',
+          question: 'Si x² - 5x + 6 = 0, ¿cuáles son los valores de x?',
+          options: ['x = 1 y x = 6', 'x = 2 y x = 3', 'x = -2 y x = -3', 'x = 5 y x = 1'],
+          correctAnswer: 1
+        },
+        {
+          course: 'matematica',
+          question: '¿Cuál es el resultado de (3/4) + (2/3)?',
+          options: ['17/12', '5/7', '1', '7/12'],
+          correctAnswer: 0
+        },
+        {
+          course: 'comunicacion',
+          question: 'En el texto “La educación es el arma más poderosa que puedes usar para cambiar el mundo”, ¿cuál es la idea central?',
+          options: ['La educación tiene alto poder transformador', 'El mundo no cambia', 'Las armas vencen', 'Solo la política importa'],
+          correctAnswer: 0
+        },
+        {
+          course: 'matematica',
+          question: 'Si un triángulo tiene ángulos de 45° y 65°, ¿cuánto mide el tercer ángulo?',
+          options: ['60°', '70°', '80°', '90°'],
+          correctAnswer: 1
+        },
+        {
+          course: 'comunicacion',
+          question: '¿Cuál de las siguientes palabras está correctamente escrita?',
+          options: ['analisis', 'análisis', 'analísi', 'analísis'],
+          correctAnswer: 1
+        },
+        {
+          course: 'matematica',
+          question: '¿Qué número sigue en la secuencia 3, 6, 12, 24, ...?',
+          options: ['30', '36', '48', '52'],
+          correctAnswer: 2
+        },
+        {
+          course: 'comunicacion',
+          question: '¿Qué se debe identificar primero en una pregunta de comprensión lectora?',
+          options: ['La palabra final', 'Lo que se pide exactamente', 'La primera opción', 'El tamaño del texto'],
+          correctAnswer: 1
+        },
+        {
+          course: 'matematica',
+          question: '¿Cuánto es 15% de 200?',
+          options: ['15', '20', '25', '30'],
+          correctAnswer: 3
+        },
+        {
+          course: 'comunicacion',
+          question: '¿Qué conector expresa contraste?',
+          options: ['Además', 'Porque', 'Sin embargo', 'Por eso'],
+          correctAnswer: 2
+        },
+        {
+          course: 'comunicacion',
+          question: 'La palabra “rápidamente” es:',
+          options: ['Verbo', 'Adjetivo', 'Adverbio', 'Pronombre'],
+          correctAnswer: 2
+        }
+      ];
+
+      const answers = [null, null, null, null, null, null, null, null, null, null];
+
+      return {
+        status: 'completed',
+        finishedAt: Date.now(),
+        durationSeconds: 30,
+        totalQuestions: questions.length,
+        answered: 0,
+        blank: questions.length,
+        correct: 0,
+        incorrect: 0,
+        score: 0,
+        student: {
+          codigo: 'EST002',
+          nombre: 'Carlos Javier Quispe',
+          nivel: 'secundaria',
+          grado: '2do'
+        },
+        questions,
+        answers,
+        config: {
+          totalQuestions: questions.length,
+          timeInSeconds: 25 * 60,
+          level: 'secundaria'
+        }
+      };
+    }
+  </script>
+</body>
+</html>
